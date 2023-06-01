@@ -4,6 +4,8 @@ import Loading from "./components/Loading";
 import Simpsons from "./components/Simpsons";
 import "./App.css";
 import Inputs from "./components/Inputs";
+import { connect } from "react-redux";
+import { NEW_API_DATA, SET_SEARCH_INPUT, SET_SORT_TYPE } from "./store/types";
 
 class App extends Component {
   state = {};
@@ -18,7 +20,7 @@ class App extends Component {
       element.id = index + Math.random();
     });
 
-    this.setState({ simpsons: data });
+    this.props.dispatch({ type: NEW_API_DATA, payload: data });
   }
 
   onLikeToggle = (id) => {
@@ -41,16 +43,15 @@ class App extends Component {
   };
 
   onSearch = (e) => {
-    this.setState({ search: e.target.value });
+    this.props.dispatch({ type: SET_SEARCH_INPUT, payload: e.target.value });
   };
 
   onSort = (e) => {
-    this.setState({ sort: e.target.value });
+    this.props.dispatch({ type: SET_SORT_TYPE, payload: e.target.value });
   };
 
   getFilteredList = () => {
-    const { simpsons, search, sort } = this.state;
-    // console.log(simpsons);
+    const { search, simpsons, sort } = this.props;
 
     let filteredList = [...simpsons];
 
@@ -91,7 +92,7 @@ class App extends Component {
   };
 
   render() {
-    const { simpsons } = this.state;
+    const { simpsons } = this.props;
 
     if (!simpsons) return <Loading />;
 
@@ -122,4 +123,8 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return { simpsons: state.simpsons, search: state.search, sort: state.sort };
+}
+
+export default connect(mapStateToProps)(App);
