@@ -7,7 +7,7 @@ class Simpsons extends Component {
 
     return (
       <>
-        {simpsons.map((item, index) => {
+        {simpsons.map((item) => {
           return (
             <Character
               item={item}

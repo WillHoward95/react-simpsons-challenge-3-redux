@@ -5,11 +5,15 @@ import Simpsons from "./components/Simpsons";
 import "./App.css";
 import Inputs from "./components/Inputs";
 import { connect } from "react-redux";
-import { NEW_API_DATA, SET_SEARCH_INPUT, SET_SORT_TYPE } from "./store/types";
+import {
+  NEW_API_DATA,
+  SET_SEARCH_INPUT,
+  SET_SORT_TYPE,
+  DELETE_ITEM,
+  LIKE_TOGGLE,
+} from "./store/types";
 
 class App extends Component {
-  state = {};
-
   async componentDidMount() {
     const { data } = await axios.get(
       `https://thesimpsonsquoteapi.glitch.me/quotes?count=50`
@@ -24,22 +28,17 @@ class App extends Component {
   }
 
   onLikeToggle = (id) => {
-    const indexOf = this.state.simpsons.findIndex((char) => {
+    const indexOf = this.props.simpsons.findIndex((char) => {
       return char.id === id;
     });
-    const simpsons = [...this.state.simpsons];
-    //invert if liked or not liked
-    simpsons[indexOf].liked = !simpsons[indexOf].liked;
-    this.setState({ simpsons });
+    this.props.dispatch({ type: LIKE_TOGGLE, payload: indexOf });
   };
 
   onDelete = (id) => {
-    const indexOf = this.state.simpsons.findIndex((char) => {
+    const indexOf = this.props.simpsons.findIndex((char) => {
       return char.id === id;
     });
-    const simpsons = [...this.state.simpsons];
-    simpsons.splice(indexOf, 1);
-    this.setState({ simpsons });
+    this.props.dispatch({ type: DELETE_ITEM, payload: indexOf });
   };
 
   onSearch = (e) => {
@@ -124,7 +123,12 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  return { simpsons: state.simpsons, search: state.search, sort: state.sort };
+  return {
+    simpsons: state.simpsons,
+    search: state.search,
+    sort: state.sort,
+    liked: state.liked,
+  };
 }
 
 export default connect(mapStateToProps)(App);

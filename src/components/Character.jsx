@@ -6,8 +6,7 @@ import Delete from "./Delete";
 
 class Character extends Component {
   render() {
-    const { character, quote, image, id, characterDirection, liked } =
-      this.props.item;
+    const { character, quote, image, id, liked } = this.props.item;
     const { onLikeToggle, onDelete } = this.props;
 
     return (
